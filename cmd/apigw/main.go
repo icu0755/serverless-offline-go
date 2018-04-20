@@ -5,11 +5,12 @@ import (
 	"encoding/base64"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	//"gopkg.in/gographics/imagick.v2/imagick"
 	"image"
 	"image/color"
 	"image/jpeg"
-	"io/ioutil"
-	"net/http"
+	//"io/ioutil"
+	//"net/http"
 )
 
 type Response struct {
@@ -34,17 +35,28 @@ func SaveImageAsJpeg(img *image.RGBA) *bytes.Buffer {
 }
 
 func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	response, _ := http.Get("https://img.melonjump.com/oH4H9poeMVrGtQtXqnFXyxypLzUBYaBU.jpg")
-	b, _ := ioutil.ReadAll(response.Body)
+	buf := SaveImageAsJpeg(CreateTestImage())
 
-	//buf := SaveImageAsJpeg(CreateTestImage())
+	//response, _ := http.Get("https://img.melonjump.com/oH4H9poeMVrGtQtXqnFXyxypLzUBYaBU.jpg")
+	//b, _ := ioutil.ReadAll(response.Body)
+
+	//imagick.Initialize()
+	//defer imagick.Terminate()
+
+	//mw := imagick.NewMagickWand()
+	//mw.SepiaToneImage(80)
+	//b = mw.GetImageBlob()
+
+	//if err := mw.ReadImageBlob(b); err != nil {
+	//	panic(err)
+	//}
 
 	headers := make(map[string]string)
 	headers["Content-Type"] = "image/jpeg"
 
 	return events.APIGatewayProxyResponse{
-		//Body:            base64.StdEncoding.EncodeToString(buf.Bytes()),
-		Body:            base64.StdEncoding.EncodeToString(b),
+		Body: base64.StdEncoding.EncodeToString(buf.Bytes()),
+		//Body:            base64.StdEncoding.EncodeToString(mw.GetImageBlob()),
 		StatusCode:      200,
 		IsBase64Encoded: true,
 		Headers:         headers,
