@@ -8,13 +8,15 @@ import (
 	"image"
 	"image/color"
 	"image/jpeg"
+	"io/ioutil"
+	"net/http"
 )
 
 type Response struct {
 	Message string `json:"message"`
 }
 
-func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func CreateTestImage() *image.RGBA {
 	img := image.NewRGBA(image.Rect(0, 0, 100, 50))
 	col := color.RGBA{255, 0, 0, 255}
 	for x1 := 30; x1 <= 50; x1++ {
@@ -22,14 +24,27 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			img.Set(x1, y1, col)
 		}
 	}
+	return img
+}
 
+func SaveImageAsJpeg(img *image.RGBA) *bytes.Buffer {
 	buf := new(bytes.Buffer)
 	jpeg.Encode(buf, img, nil)
+	return buf
+}
+
+func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	response, _ := http.Get("https://img.melonjump.com/oH4H9poeMVrGtQtXqnFXyxypLzUBYaBU.jpg")
+	b, _ := ioutil.ReadAll(response.Body)
+
+	//buf := SaveImageAsJpeg(CreateTestImage())
+
 	headers := make(map[string]string)
 	headers["Content-Type"] = "image/jpeg"
 
 	return events.APIGatewayProxyResponse{
-		Body:            base64.StdEncoding.EncodeToString(buf.Bytes()),
+		//Body:            base64.StdEncoding.EncodeToString(buf.Bytes()),
+		Body:            base64.StdEncoding.EncodeToString(b),
 		StatusCode:      200,
 		IsBase64Encoded: true,
 		Headers:         headers,
