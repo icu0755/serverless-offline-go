@@ -12,9 +12,18 @@
   revision = "6e2e37798efbb1dfd8e9c6681702e683a6046517"
   version = "v1.0.1"
 
+[[projects]]
+  name = "gopkg.in/gographics/imagick.v1"
+  packages = [
+    "imagick",
+    "imagick/types"
+  ]
+  revision = "d099729bec659a0ffda4785a2226ecab0a62e2c3"
+  version = "v1.1.2"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3375957ebac467c0b60004a3901209363670a2ee730d5474c3d1ad1b121325bd"
+  inputs-digest = "c19c86df7cf7d31e98fc47e904227912e6b74bbba1ec025f279942fece7fc7c7"
   solver-name = "gps-cdcl"
   solver-version = 1

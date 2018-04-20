@@ -5,12 +5,12 @@ import (
 	"encoding/base64"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	//"gopkg.in/gographics/imagick.v2/imagick"
+	"gopkg.in/gographics/imagick.v1/imagick"
 	"image"
 	"image/color"
 	"image/jpeg"
-	//"io/ioutil"
-	//"net/http"
+	"io/ioutil"
+	"net/http"
 )
 
 type Response struct {
@@ -35,28 +35,29 @@ func SaveImageAsJpeg(img *image.RGBA) *bytes.Buffer {
 }
 
 func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	buf := SaveImageAsJpeg(CreateTestImage())
+	//buf := SaveImageAsJpeg(CreateTestImage())
 
-	//response, _ := http.Get("https://img.melonjump.com/oH4H9poeMVrGtQtXqnFXyxypLzUBYaBU.jpg")
-	//b, _ := ioutil.ReadAll(response.Body)
+	response, _ := http.Get("https://img.melonjump.com/oH4H9poeMVrGtQtXqnFXyxypLzUBYaBU.jpg")
+	b, _ := ioutil.ReadAll(response.Body)
 
-	//imagick.Initialize()
-	//defer imagick.Terminate()
+	imagick.Initialize()
+	defer imagick.Terminate()
 
-	//mw := imagick.NewMagickWand()
-	//mw.SepiaToneImage(80)
-	//b = mw.GetImageBlob()
+	mw := imagick.NewMagickWand()
 
-	//if err := mw.ReadImageBlob(b); err != nil {
-	//	panic(err)
-	//}
+	if err := mw.ReadImageBlob(b); err != nil {
+		panic(err)
+	}
+
+	//mw.SepiaToneImage(20)
+	mw.NegateImage(false)
 
 	headers := make(map[string]string)
 	headers["Content-Type"] = "image/jpeg"
 
 	return events.APIGatewayProxyResponse{
-		Body: base64.StdEncoding.EncodeToString(buf.Bytes()),
-		//Body:            base64.StdEncoding.EncodeToString(mw.GetImageBlob()),
+		//Body: base64.StdEncoding.EncodeToString(buf.Bytes()),
+		Body:            base64.StdEncoding.EncodeToString(mw.GetImageBlob()),
 		StatusCode:      200,
 		IsBase64Encoded: true,
 		Headers:         headers,
