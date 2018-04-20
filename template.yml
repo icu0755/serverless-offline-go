@@ -18,5 +18,3 @@ Resources:
           Properties:
             Path: /
             Method: get
-      BinaryMediaTypes:
-        - "*/*"

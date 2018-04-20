@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"image"
+	"image/color"
 	"image/jpeg"
 )
 
@@ -14,15 +15,14 @@ type Response struct {
 }
 
 func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	//mw := imagick.NewMagickWand()
-	//defer mw.Destroy()
-	//dw := imagick.NewDrawingWand()
-	//pw := imagick.NewPixelWand()
-
-	//pw.SetColor("white")
-	//dw.Rectangle(0, 0, 100, 100)
-
 	img := image.NewRGBA(image.Rect(0, 0, 100, 50))
+	col := color.RGBA{255, 0, 0, 255}
+	for x1 := 30; x1 <= 50; x1++ {
+		for y1 := 30; y1 <= 50; y1++ {
+			img.Set(x1, y1, col)
+		}
+	}
+
 	buf := new(bytes.Buffer)
 	jpeg.Encode(buf, img, nil)
 	headers := make(map[string]string)
@@ -37,7 +37,5 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 }
 
 func main() {
-	//imagick.Initialize()
-	//defer imagick.Terminate()
 	lambda.Start(Handler)
 }
